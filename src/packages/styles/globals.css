@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    @apply border-border-default;
+  }
+}
+
+body {
+  @apply font-sans bg-background-page text-text-body;
+}
+
+@property --border-angle {
+  inherits: false;
+  initial-value: 0deg;
+  syntax: "<angle>";
+}
+
+@keyframes rotate-border-angle {
+  to {
+    --border-angle: 1turn;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-border {
+    animation: none;
+  }
+}
+
+.markdown p {
+  @apply leading-normal;
+}
+
+.markdown code {
+  @apply text-xxs border px-1 py-0.5 bg-background-page-subtle border-border-default rounded-md text-text-strong;
+}
