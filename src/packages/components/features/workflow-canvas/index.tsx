@@ -4,7 +4,7 @@ import { Box } from "@/packages/components/ui/box";
 import { DotGrid } from "@/packages/components/ui/dot-grid";
 import { ThemeToggle } from "@/packages/components/ui/theme-toggle";
 import { WorkflowNodeStatus } from "@/packages/types/workflow-node.type";
-
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useState } from "react";
 
 export function WorkflowCanvas() {
@@ -19,12 +19,18 @@ export function WorkflowCanvas() {
     },
   });
 
+  const [transformState, setTransformState] = useState({
+    scale: 1,
+    positionX: 0,
+    positionY: 0,
+  });
+
   return (
-    <Box className="border border-border-default max-w-4xl w-full rounded-xl relative overflow-hidden flex flex-col">
+    <Box className="h-screen w-full relative overflow-hidden flex flex-col">
       <Box className="p-4 border-b bg-background-page-subtle border-border-default flex items-center justify-between">
         <Box
           as="select"
-          className="capitalize text-sm h-8 px-2 rounded-md"
+          className="capitalize text-xs h-8 px-2 rounded-md border appearance-none outline-none"
           value={node.status}
           onChange={(e) =>
             setNode({ ...node, status: e.target.value as WorkflowNodeStatus })
@@ -40,10 +46,36 @@ export function WorkflowCanvas() {
         <ThemeToggle />
       </Box>
 
-      <Box className="flex items-center justify-center flex-1 relative min-h-[500px]">
-        <DotGrid />
-        <Node node={node} setNode={setNode} />
-      </Box>
+      <TransformWrapper
+        wheel={{ step: 0.1, smoothStep: 0.02 }}
+        limitToBounds={false}
+        minScale={0.8}
+        maxScale={4}
+        doubleClick={{ disabled: true }}
+        panning={{ disabled: false }}
+        onTransformed={(ref, state) => {
+          setTransformState({
+            scale: state.scale,
+            positionX: state.positionX,
+            positionY: state.positionY,
+          });
+        }}
+      >
+        <Box className="relative w-full flex-1">
+          <DotGrid
+            scale={transformState.scale}
+            positionX={transformState.positionX}
+            positionY={transformState.positionY}
+          />
+          <TransformComponent
+            wrapperStyle={{ width: "100%", height: "100%", minHeight: "500px" }}
+            contentStyle={{ width: "100%", height: "100%" }}
+            contentClass="flex items-center justify-center flex-1 relative"
+          >
+            <Node node={node} setNode={setNode} />
+          </TransformComponent>
+        </Box>
+      </TransformWrapper>
     </Box>
   );
 }
