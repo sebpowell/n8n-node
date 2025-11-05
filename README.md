@@ -40,7 +40,7 @@ You can toggle between light and dark themes using the switch in the top-right c
 
 ### Description
 
-Each node can contain a lot of configuration data, which can quickly become overwhelming. My thought was to include an AI-generated summary of what the node does giving users a quick, human-readable description at a glance.
+Each node can contain a lot of configuration data, which can quickly become overwhelming. My thought was to include an AI-generated summary of what the node does giving users a quick, human-readable description at a glance. This then turns the entire view into a 'story' that can easily be followed, even by a non-technical user.
 
 In the prototype, I used a `Markdown` string so that parameters could be formatted as inline code for readability.
 
