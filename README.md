@@ -3,7 +3,7 @@
 1.	Install dependencies `pnpm i`
 2.	Run locally `pnpm dev`
 
-A demo is available [here]().
+A demo is available [here](https://n8n-node-ltoj.vercel.app/).
 Designs are available on [Figma](https://www.figma.com/design/gQJ5yd8nrltukDNg1CEKbg/n8n?node-id=0-1&t=tvU2CGxhp9iYQWKR-1)
 
 Please note that due to time constraints, I didn't design every possible state and moved into code once I had a clear enough direction. There are also a few small discrepancies between design and implementation for the same reason.
