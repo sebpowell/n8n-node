@@ -11,8 +11,9 @@ import { WorkflowNodeActions } from "@/packages/components/features/workflow-nod
 import { FaEllipsisVertical, FaPlus } from "react-icons/fa6";
 import { WorkflowNodeMenu } from "@/packages/components/features/workflow-node/workflow-node-menu";
 import { cva } from "class-variance-authority";
-import { useEffect, useRef } from "react";
-import { motion } from "motion/react";
+import { useState } from "react";
+import { useTimeoutFn } from "react-use";
+import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/packages/utils/cn.util";
 import { Markdown } from "@/packages/components/ui/markdown";
 import { WorkflowNodeStatusBadge } from "@/packages/components/features/workflow-node/workflow-node-status-badge";
@@ -43,7 +44,7 @@ function NodeHeader(props: BoxProps<"header">) {
   );
 }
 
-const nodeBorderGradientStyles = cva("", {
+export const nodeBorderGradientStyles = cva("", {
   variants: {
     status: {
       [WorkflowNodeStatus.SUCCESS]:
@@ -64,18 +65,25 @@ function NodeContainer(props: BoxProps<"div">) {
   return <Box className="relative text-left w-[300px]" {...restProps} />;
 }
 
-function NodeContent(props: BoxProps<"div">) {
-  const { className, ...rest } = props;
+function NodeContent(
+  props: BoxProps<"div"> & {
+    contentRef?: React.RefObject<HTMLDivElement | null>;
+  }
+) {
+  const { className, onMouseEnter, onMouseLeave, children, contentRef } = props;
 
   return (
-    <Box
-      as="div"
+    <motion.div
+      ref={contentRef}
       className={cn(
         "border w-[300px] border-border-default flex flex-col rounded-lg ring-0 transition-all cursor-pointer relative",
         className
       )}
-      {...rest}
-    />
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave as React.MouseEventHandler<HTMLDivElement>}
+    >
+      {children}
+    </motion.div>
   );
 }
 
@@ -89,7 +97,24 @@ export function Node(props: NodeProps) {
 
   const { action, title, description, status } = node;
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const [, , resetTimeout] = useTimeoutFn(() => {
+    const randomStatus =
+      Math.random() < 0.5
+        ? WorkflowNodeStatus.SUCCESS
+        : WorkflowNodeStatus.ERROR;
+
+    setNode({ ...node, status: randomStatus });
+  }, 2000);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
   const handleToggleStatus = (enabled: boolean) => {
     setNode({
@@ -102,30 +127,8 @@ export function Node(props: NodeProps) {
 
   const handlePlay = () => {
     setNode({ ...node, status: WorkflowNodeStatus.PENDING });
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      const randomStatus =
-        Math.random() < 0.5
-          ? WorkflowNodeStatus.SUCCESS
-          : WorkflowNodeStatus.ERROR;
-
-      setNode({ ...node, status: randomStatus });
-
-      timeoutRef.current = null;
-    }, 2000);
+    resetTimeout();
   };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
 
   return (
     <WorkflowNodeContextProvider node={node}>
@@ -153,22 +156,44 @@ export function Node(props: NodeProps) {
             nodeBorderGradientStyles({ status }),
             "border animate-border group relative"
           )}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
-          {status !== WorkflowNodeStatus.PENDING && (
-            <WorkflowNodeActions handlePlay={handlePlay} />
-          )}
+          <AnimatePresence>
+            {status !== WorkflowNodeStatus.PENDING &&
+              status !== WorkflowNodeStatus.DISABLED && (
+                <motion.div
+                  initial={{ opacity: 0, x: 0 }}
+                  animate={
+                    isHovered ? { opacity: 1, x: -32 } : { opacity: 0, x: 0 }
+                  }
+                  exit={{ opacity: 0, x: -32 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 30,
+                  }}
+                  className="absolute left-0 top-4"
+                  style={{
+                    width: "32px",
+                  }}
+                >
+                  <WorkflowNodeActions handlePlay={handlePlay} />
+                </motion.div>
+              )}
+          </AnimatePresence>
           <WorkflowNodeMenu>
             <Box
               tabIndex={0}
-              className="group bg-background-surface hover:bg-background-surface-hover rounded-[7px] transition-colors z-0"
+              className="group shadow-sm bg-background-surface hover:bg-background-surface-hover rounded-[7px] transition-colors z-0"
             >
               <NodeHeader>
                 <NodeIcon />
-                <Box className="flex flex-col flex-1 text-left space-y-0.5">
-                  <NodeTitle className="text-xs font-medium text-text-strong">
+                <Box className="flex flex-col flex-1 text-left space-y-1">
+                  <NodeTitle className="text-xs font-medium text-text-strong leading-none">
                     {title}
                   </NodeTitle>
-                  <Box className="leading-none border inline-flex items-center text-[10px] h-3 pb-px rounded-sm gap-2 px-0.5 w-fit">
+                  <Box className="leading-none border inline-flex items-center text-[10px] h-[14px] pb-px font-medium text-text-subtle rounded-[4px] gap-2 px-0.5 w-fit">
                     {action}
                   </Box>
                 </Box>
