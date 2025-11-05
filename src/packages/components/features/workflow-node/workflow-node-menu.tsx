@@ -1,3 +1,4 @@
+import { Box } from "@/packages/components/ui/box";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -8,11 +9,12 @@ import {
 } from "@/packages/components/ui/context-menu";
 
 enum ShortkutKeys {
-  "RETURN" = "RETURN",
-  "SPACE" = "SPACE",
+  "RETURN" = "↵",
+  "SPACE" = "Space",
   "SHIFT" = "SHIFT",
-  "OPTION" = "OPTION",
-  "DELETE" = "DELETE",
+  "OPTION" = "⌘",
+  "ALT" = "⌥",
+  "DELETE" = "Del",
 }
 
 type NodeMenuItemBase = {
@@ -59,7 +61,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Replace",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: ["R"],
     onClick: () => {
       console.log("Replace");
     },
@@ -67,7 +69,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Deactivate",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: ["D"],
     onClick: () => {
       console.log("Deactivate");
     },
@@ -75,7 +77,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Pin",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: ["P"],
     onClick: () => {
       console.log("Pin");
     },
@@ -83,7 +85,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Copy",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: [ShortkutKeys.OPTION, "C"],
     onClick: () => {
       console.log("Copy");
     },
@@ -91,7 +93,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Duplicate",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: [ShortkutKeys.OPTION, "D"],
     onClick: () => {
       console.log("Duplicate");
     },
@@ -113,7 +115,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Convert node to sub-workflow",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: [ShortkutKeys.ALT, "W"],
     onClick: () => {
       console.log("Convert node to sub-workflow");
     },
@@ -124,7 +126,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Select all",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: [ShortkutKeys.OPTION, "A"],
     onClick: () => {
       console.log("Select all");
     },
@@ -132,7 +134,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Clear selection",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: [],
     onClick: () => {
       console.log("Clear selection");
     },
@@ -143,7 +145,7 @@ const CONTEXT_MENU_ITEMS: NodeMenuItem[] = [
   {
     type: "action",
     label: "Delete",
-    shortcutKeys: [ShortkutKeys.RETURN],
+    shortcutKeys: [ShortkutKeys.DELETE],
     onClick: () => {
       console.log("Delete");
     },
@@ -166,10 +168,14 @@ export function WorkflowNodeMenu(props: { children: React.ReactNode }) {
 
           return (
             <ContextMenuItem key={label} onClick={onClick}>
-              {label}
-              <ContextMenuShortcut>
-                {shortcutKeys.join(" + ")}
-              </ContextMenuShortcut>
+              <Box className="flex-1">{label}</Box>
+              <Box className="flex items-center gap-1">
+                {shortcutKeys.map((shortcutKey) => (
+                  <ContextMenuShortcut key={shortcutKey}>
+                    {shortcutKey}
+                  </ContextMenuShortcut>
+                ))}
+              </Box>
             </ContextMenuItem>
           );
         })}

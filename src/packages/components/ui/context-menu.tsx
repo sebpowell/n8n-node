@@ -27,7 +27,7 @@ function ContextMenuContent({
       <ContextMenuPrimitive.Content
         data-slot="context-menu-content"
         className={cn(
-          "bg-background-surface py-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border shadow-md",
+          "bg-background-surface py-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 max-h-(--radix-context-menu-content-available-height) min-w-[8rem] origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border shadow-md w-[280px]",
           className
         )}
         {...props}
@@ -51,7 +51,7 @@ function ContextMenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "focus:bg-background-surface-hover text-sm px-3 h-8 flex items-center",
+        "focus:bg-background-surface-hover transition-colors outline-none text-xs text-text-subtle focus:text-text-strong cursor-pointer px-3 h-8 flex items-center",
         className
       )}
       {...props}
@@ -66,7 +66,7 @@ function ContextMenuSeparator({
   return (
     <ContextMenuPrimitive.Separator
       data-slot="context-menu-separator"
-      className={cn("bg-border-default -mx-1 my-1 h-px", className)}
+      className={cn("bg-border-default my-1 h-px", className)}
       {...props}
     />
   );
@@ -80,7 +80,7 @@ function ContextMenuShortcut({
     <span
       data-slot="context-menu-shortcut"
       className={cn(
-        "text-muted-foreground bg-background-page-subtle font-mono border ml-auto text-xs tracking-widest px-1 h-5 min-w-5 rounded-sm text-[8px]",
+        "text-muted-foreground leading-none text-text-subtle bg-background-page-subtle font-mono border ml-auto text-[10px] text-center px-1 h-5 min-w-5 rounded-md inline-flex items-center justify-center",
         className
       )}
       {...props}
