@@ -11,8 +11,7 @@ import { WorkflowNodeActions } from "@/packages/components/features/workflow-nod
 import { FaEllipsisVertical, FaPlus } from "react-icons/fa6";
 import { WorkflowNodeMenu } from "@/packages/components/features/workflow-node/workflow-node-menu";
 import { cva } from "class-variance-authority";
-import { useState } from "react";
-import { useTimeoutFn } from "react-use";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/packages/utils/cn.util";
 import { Markdown } from "@/packages/components/ui/markdown";
@@ -99,14 +98,7 @@ export function Node(props: NodeProps) {
 
   const [isHovered, setIsHovered] = useState(false);
 
-  const [, , resetTimeout] = useTimeoutFn(() => {
-    const randomStatus =
-      Math.random() < 0.5
-        ? WorkflowNodeStatus.SUCCESS
-        : WorkflowNodeStatus.ERROR;
-
-    setNode({ ...node, status: randomStatus });
-  }, 2000);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -127,8 +119,29 @@ export function Node(props: NodeProps) {
 
   const handlePlay = () => {
     setNode({ ...node, status: WorkflowNodeStatus.PENDING });
-    resetTimeout();
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      const randomStatus =
+        Math.random() < 0.5
+          ? WorkflowNodeStatus.SUCCESS
+          : WorkflowNodeStatus.ERROR;
+
+      setNode({ ...node, status: randomStatus });
+      timeoutRef.current = null;
+    }, 2000);
   };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <WorkflowNodeContextProvider node={node}>

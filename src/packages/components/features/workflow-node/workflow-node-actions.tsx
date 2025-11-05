@@ -1,4 +1,4 @@
-import { FaPlay } from "react-icons/fa6";
+import { FaPlay, FaRecycle, FaRotateRight } from "react-icons/fa6";
 import { cn } from "@/packages/utils/cn.util";
 import { WorkflowNodeStatus } from "@/packages/types/workflow-node.type";
 import { Loader } from "@/packages/components/ui/loader";
@@ -28,8 +28,10 @@ export function WorkflowNodeActions(props: {
     >
       {status === WorkflowNodeStatus.PENDING ? (
         <Loader className="size-2.5" />
-      ) : (
+      ) : status === WorkflowNodeStatus.NEUTRAL ? (
         <FaPlay className="size-2.5" />
+      ) : (
+        <FaRotateRight className="size-2.5" />
       )}
     </motion.button>
   );
