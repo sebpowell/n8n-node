@@ -12,7 +12,7 @@ export function WorkflowCanvas() {
     id: "1",
     title: "Create resource",
     action: "create:row",
-    status: WorkflowNodeStatus.SUCCESS,
+    status: WorkflowNodeStatus.NEUTRAL,
     description: "Creates a new record in base `Data`, table `Collections`.",
     app: {
       domain: "airtable.com",
