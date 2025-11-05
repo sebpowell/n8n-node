@@ -1,36 +1,36 @@
 import { FaPlay } from "react-icons/fa6";
 import { cn } from "@/packages/utils/cn.util";
-import { Box, BoxProps } from "@/packages/components/ui/box";
 import { WorkflowNodeStatus } from "@/packages/types/workflow-node.type";
 import { Loader } from "@/packages/components/ui/loader";
 import { useWorkflowNodeContext } from "@/packages/components/features/workflow-node/workflow-node.context";
+import { motion } from "motion/react";
 
-export function WorkflowNodeActions(
-  props: BoxProps<"button"> & {
-    handlePlay: () => void;
-  }
-) {
+export function WorkflowNodeActions(props: {
+  handlePlay: () => void;
+  className?: string;
+}) {
   const { node } = useWorkflowNodeContext();
 
   const { status } = node;
 
-  const { className, handlePlay, ...rest } = props;
+  const { className, handlePlay } = props;
 
   return (
-    <Box
+    <motion.button
       className={cn(
-        "border opacity-0 left-0 group-hover:-left-[33px] border-r-0 hover:bg-background-page-subtle group-hover:opacity-100 transition-all absolute rounded-md top-3 flex items-center justify-center bg-background-page border-border-default text-text-subtle size-8 hover:text-green-10 rounded-r-none ",
+        "pl-px border-r-0 hover:bg-green-4 transition-all rounded-md flex items-center justify-center bg-input-background text-text-subtle size-6 hover:text-green-10",
         className
       )}
       disabled={status === WorkflowNodeStatus.PENDING}
       onClick={handlePlay}
-      {...rest}
+      whileTap={{ scale: 0.85 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       {status === WorkflowNodeStatus.PENDING ? (
-        <Loader />
+        <Loader className="size-2.5" />
       ) : (
-        <FaPlay className="size-3" />
+        <FaPlay className="size-2.5" />
       )}
-    </Box>
+    </motion.button>
   );
 }
