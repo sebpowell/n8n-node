@@ -53,7 +53,7 @@ export function WorkflowNodeStatusBadge(
   return (
     <Box
       className={cn(
-        "inline-flex items-center pb-3 border border-b-0 justify-center rounded-lg gap-x-1 pt-[3px] rounded-b-none px-1.5",
+        "inline-flex items-center pb-3 justify-center rounded-lg gap-x-1 pt-[3px] rounded-b-none px-1.5",
         className,
         styles
       )}

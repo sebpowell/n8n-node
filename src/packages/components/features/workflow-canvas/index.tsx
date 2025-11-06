@@ -13,7 +13,7 @@ export function WorkflowCanvas() {
     title: "Create resource",
     action: "create:row",
     status: WorkflowNodeStatus.NEUTRAL,
-    description: "Creates a new record in base `Data`, table `Collections`.",
+    description: "Creates a new record in the `Airtable` base `Data`, table `Collections`.",
     app: {
       domain: "airtable.com",
     },
@@ -28,19 +28,22 @@ export function WorkflowCanvas() {
   return (
     <Box className="h-screen w-full relative overflow-hidden flex flex-col">
       <Box className="p-4 border-b bg-background-page-subtle border-border-default flex items-center justify-between">
-        <Box
-          as="select"
-          className="capitalize text-xs h-8 px-2 rounded-md border appearance-none outline-none"
-          value={node.status}
-          onChange={(e) =>
-            setNode({ ...node, status: e.target.value as WorkflowNodeStatus })
-          }
-        >
-          {Object.values(WorkflowNodeStatus).map((value) => (
-            <option key={value} value={value}>
-              {value}
-            </option>
-          ))}
+        <Box className="flex items-center gap-2">
+          <Box className="text-xs text-text-subtle flex items-center">Status</Box>
+          <Box
+            as="select"
+            className="capitalize text-xs h-8 px-2 rounded-md outline-none cursor-pointer"
+            value={node.status}
+            onChange={(e) =>
+              setNode({ ...node, status: e.target.value as WorkflowNodeStatus })
+            }
+          >
+            {Object.values(WorkflowNodeStatus).map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </Box>
         </Box>
 
         <ThemeToggle />

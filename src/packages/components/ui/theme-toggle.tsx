@@ -7,16 +7,21 @@ import { useTheme } from "next-themes";
 import { FaMoon, FaSun } from "react-icons/fa6";
 
 const ThemeToggle = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, resolvedTheme, setTheme } = useTheme();
+
+  if (typeof window === "undefined" || typeof resolvedTheme === "undefined")
+    return null;
 
   return (
     <ToggleGroup
       type="single"
       size="default"
-      value={theme}
+      value={resolvedTheme ?? theme ?? undefined}
       shape="capsule"
       className="rounded-full border"
-      onValueChange={(value) => setTheme(value)}
+      onValueChange={(value) => {
+        if (value) setTheme(value);
+      }}
     >
       <ToggleGroupItem value="light" className="rounded-full">
         <FaSun className="size-3" />
